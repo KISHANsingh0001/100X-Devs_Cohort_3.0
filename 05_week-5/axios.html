@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch Api</title>
+    <head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
+    </head>
+</head>
+<body>
+     linkdin
+     <div id="posts"></div>
+
+     <script>
+        async function getRecentPost(){
+            console.log("Before Sending the request");
+            // axios automatically convert the response into json 
+            
+            const response = await axios.get("https://jsonplaceholder.typicode.com/posts/1");
+
+
+            document.getElementById("posts").innerHTML = response.data.body;
+            console.log("After sending the request");
+            
+        }
+        getRecentPost();
+     </script>
+</body>
+</html>

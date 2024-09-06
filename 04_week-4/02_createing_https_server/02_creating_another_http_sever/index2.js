@@ -45,30 +45,28 @@ app.post("/" , function(req , res){ // posting the cars with the status healthy 
 })
 //----------------------------------------------------------------------------------------
 function isHealthyCarCheaker(){
-    let flag = true;
     for(let i = 0 ; i<user[0].cars.length ; i++){
-       if(user[0].cars[i].healthy === false){
-         flag = false;
+       if(!user[0].cars[i].healthy){
+         return false;
        }
     }
-    return flag;
+    return true;
  
  }
-app.put("/" , function(req , res){ // Makes all unhealthy cars to healthy 
+ app.put("/" , function(req , res){ // Makes all unhealthy cars healthy
     if(isHealthyCarCheaker()){
        res.status(411).json({
         msg: "No UnHealthy car is present!!!"
        })
-    }
-    else{
-        for(let i = 0 ; i<user[0].cars.length ; i++){
+    } else {
+        for(let i = 0; i < user[0].cars.length; i++){
             user[0].cars[i].healthy = true;
         }
         res.json({
             msg: "Done!!"
         })
     }
-})
+});
 //---------------------------------------------------------
 function check(){
     let check = false;
@@ -79,7 +77,7 @@ function check(){
     }
     return check;
   }
-app.delete("/" , function(req,res){// this Route Delete the all Unhealthy cars 
+app.delete("/" , function(req,res){// this Route Delete the all Unhealthy cars
   if(check()){
     // only if atleast one unhealthy kidney is there do this , else reuturn 411
     let newCars = [];
@@ -102,4 +100,4 @@ app.delete("/" , function(req,res){// this Route Delete the all Unhealthy cars
     })
   }
 })
-app.listen(3000);
+app.listen(3002);
