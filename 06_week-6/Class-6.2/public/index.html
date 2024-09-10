@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Platform</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
+</head>
+
+<body>
+    <div>
+        Signup
+        <input type="text" name="username" id="signup-username" placeholder="Username">
+        <input type="password" name="username" id="signup-password" placeholder="password">
+        <button onclick="signup()">Sumbit</button>
+    </div>
+
+    <div>
+        Signin
+        <input type="text" name="username" id="signin-username" placeholder="Username">
+        <input type="password" name="username" id="signin-password" placeholder="password">
+        <button onclick="signin()">Sumbit</button>
+    </div>
+
+    <div>
+
+        <button onclick="getUserInfo()">Get User info:</button>
+        <div id="information"></div>
+    </div>
+
+    <div>
+        <button onclick="logout()">Logout</button>
+    </div>
+</body>
+<script>
+
+    async function signup() {
+        try {
+            // get the content of the signup feild username
+            const username = document.getElementById("signup-username").value;
+            // get the content of the signup feild password
+            const password = document.getElementById("signup-password").value;
+            // sending the request to our backend using axios 
+            const respone = await axios.post("http://localhost:3000/signup", {
+                username: username,
+                password: password
+            });
+
+            alert("You are Signed up");
+        }
+        catch(error){
+            alert("You are already Signed Up");
+        }
+   }
+
+    async function signin() {
+        try {
+            // get the content of the signup feild username
+            const username = document.getElementById("signin-username").value;
+            // get the content of the signup feild password
+            const password = document.getElementById("signin-password").value;
+
+            const response = await axios.post("http://localhost:3000/signin", {
+                username: username,
+                password: password
+            });
+
+            localStorage.setItem("token", response.data.token);
+
+            alert("You are Signed In");
+        }
+        catch (error) {
+            alert("Failed to sign in. please check Your username and password");
+        }
+    }
+
+    async function getUserInfo() {
+        try {
+            const token = localStorage.getItem("token");
+
+            // Check if token exists before making the request
+            if (!token) {
+                alert("You are not signed in. Please sign in first.");
+                return;
+            }
+
+            // Make the request to get user information
+            const response = await axios.get("http://localhost:3000/me", {
+                headers: {
+                    token: token
+                }
+            });
+            document.getElementById("information").innerHTML = "Username: " + response.data.username;
+
+        } catch (error) {
+            // Handle errors (e.g., invalid token, network issues)
+            console.error("Error fetching user info:", error);
+            alert("Failed to fetch user information. Please try signing in again.");
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem("token")
+        document.getElementById("information").innerHTML = "";
+    }
+</script>
+
+</html>
