@@ -13,6 +13,7 @@ Create a course selling app
 */
 
 // Import express, and mongoose modules
+require('dotenv').config()
 const express = require("express");
 const mongoose = require("mongoose");
 
@@ -20,9 +21,11 @@ const mongoose = require("mongoose");
 const { userRouter } = require("./routes/user");
 const { courseRouter } = require("./routes/course");
 const { adminRouter } = require("./routes/admin");
+const exp = require("constants");
 
 // Initialize express app
 const app = express();
+app.use(express.json());
 
 // use the routes in the app object
 app.use("/api/v1/user", userRouter);
@@ -39,7 +42,7 @@ createCourseRoutes();
 async function main() {
     try {
         // Use environment variable for the connection string
-       await mongoose.connect("mongodb+srv://100xdevs:WvaTca0509mb90YX@cluster0.ossjd.mongodb.net/coursera-app");
+       await mongoose.connect(process.env.MONGO_URL);
         console.log("Connected to the database");
         
         // Start the server on port 3000
@@ -48,7 +51,7 @@ async function main() {
         });
     } catch (error) {
         console.error("Failed to connect to the database:", error);
-        process.exit(1);
+       
     }
 }
 

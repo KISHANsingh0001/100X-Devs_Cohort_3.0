@@ -1,5 +1,6 @@
 // Import mongoose to interact with MongoDB
 const mongoose = require("mongoose");
+const { string } = require("zod");
 
 // Use Schema and ObjectId from mongoose for creating models
 const Schema = mongoose.Schema;
@@ -16,7 +17,7 @@ const userSchema = new Schema({
 // Define the Admin schema with email, password, firstName, and lastName fields
 const adminSchema = new Schema({
     email: { type: String, unique: true }, // Make email unique to avoid duplicate entries
-    password: String,
+    password: {type:String},
     firstName: String,
     lastName: String,
 });
@@ -37,10 +38,10 @@ const purchaseSchema = new Schema({
 });
 
 // Create models for User, Admin, Course, and Purchase using the respective schemas
-const userModel = mongoose.model("user", userSchema);
-const adminModel = mongoose.model("admin", adminSchema);
-const courseModel = mongoose.model("course", courseSchema);
-const purchaseModel = mongoose.model("purchase", purchaseSchema);
+const userModel = mongoose.model("users", userSchema);
+const adminModel = mongoose.model("admins", adminSchema);
+const courseModel = mongoose.model("courses", courseSchema);
+const purchaseModel = mongoose.model("purchases", purchaseSchema);
 
 // Export the userModel, adminModel, courseModel, and purchaseModel to be used in other files
 module.exports = {

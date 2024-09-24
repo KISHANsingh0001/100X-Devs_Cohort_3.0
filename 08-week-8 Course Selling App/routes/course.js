@@ -24,6 +24,7 @@ courseRouter.get("/preview", function (req, res) {
 
 // Define the course routes for getting all courses
 courseRouter.get("/courses", function (req, res) {
+    
     res.json({
         message: " Course  endpoint!",
     });
