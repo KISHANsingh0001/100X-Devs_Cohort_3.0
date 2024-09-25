@@ -159,7 +159,7 @@ adminRouter.post("/course", adminMiddleware, async function (req, res) {
 
 // Define the admin routes for updating a course
 adminRouter.put("/update", adminMiddleware, async function (req, res) {
-    const adminId = req.adminId;  // The ID of the logged-in admin
+    const creatorId = req.adminId;  // The ID of the logged-in admin
 
     // Define a Zod schema where all fields are optional
     const requireData = z.object({
@@ -190,7 +190,6 @@ adminRouter.put("/update", adminMiddleware, async function (req, res) {
             msg: "Course ID is required"
         });
     }
-
     // Create an object to hold the updated fields
     const updatedFields = {};
     if (title) updatedFields.title = title;
@@ -208,12 +207,12 @@ adminRouter.put("/update", adminMiddleware, async function (req, res) {
     try {
         // Update the course
         const update = await courseModel.updateOne(
-            { _id: courseId, creatorId: adminId },  // Match by courseId and creatorId
+            { _id: courseId, creatorId: creatorId },  // Match by courseId and creatorId
             updatedFields  // Only update the fields provided
         );
 
         // Check if any course was updated
-        if (update.matchedCount === 0) {
+        if (update.matchedCount === 0) {// If matchedCount is 0, it means no course with that courseId and creatorId was found in the database.
             return res.status(404).json({
                 msg: "Course not found or you're not the creator"
             });
@@ -232,22 +231,29 @@ adminRouter.put("/update", adminMiddleware, async function (req, res) {
 });
 
 // Define the admin routes for getting all courses
-adminRouter.get("course/bulk", adminMiddleware, async function (req, res) {
-    const adminId = req.adminId;
+adminRouter.get("/course/bulk", adminMiddleware, async function (req, res) {
+    try {
+        const adminId = req.adminId;
 
-
-    const courses = await courseModel.find({
-        creatorId: adminId,
-    });
-    if(courses){
-        res.status(200).json({
-            message: "Your Courses is : ",
-            courses
+        const courses = await courseModel.find({
+            creatorId: adminId,
         });
-    }
-    else{
-        res.status(403).json({
-            msg : "You have not created any course yet"
+
+        if (courses.length > 0) {
+            res.status(200).json({
+                message: "Your Courses are : ",
+                courses
+            });
+        } else {
+            res.status(200).json({
+                message: "You have not created any course yet",
+                courses: []
+            });
+        }
+    } catch (error) {
+        res.status(500).json({
+            message: "An error occurred while fetching courses",
+            error: error.message
         });
     }
 });
